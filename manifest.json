@@ -1,18 +1,15 @@
 {
-  "name": "Rotting Notes - Notes That Are Alive",
+  "name": "Rotting Notes",
   "short_name": "Rotting Notes",
   "start_url": "./",
-  "scope": "./",
   "display": "standalone",
   "background_color": "#08080b",
   "theme_color": "#08080b",
-  "description": "Notes are alive. They grow when you care for them and rot when you ignore them.",
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "icon-512.png",
