@@ -1,0 +1,19 @@
+{
+  "name": "Rotting Notes - Notes That Are Alive",
+  "short_name": "Rotting Notes",
+  "id": "/",
+  "description": "Notes are alive. They grow when you care for them and rot when you ignore them. Water your thoughts daily.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08080b",
+  "theme_color": "#08080b",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

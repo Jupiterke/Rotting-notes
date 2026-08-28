@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#08080b">
+<meta name="description" content="Notes are alive. They grow when you care for them and rot when you ignore them.">
+<title>Rotting Notes</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box; font-family:'Inter',sans-serif; margin:0; padding:0}
+body{background:#08080b; color:#fff; line-height:1.5}
+body.light{background:#fafafb; color:#111}
+.top{position:sticky; top:0; z-index:50; backdrop-filter:blur(20px); background:rgba(8,8,11,0.9); border-bottom:1px solid #1a1a1a; padding:14px 16px; display:flex; justify-content:space-between; align-items:center}
+.wrap{max-width:640px; margin:0 auto; padding:16px}
+.hero{background:linear-gradient(135deg,#0a1a12,#11111a); border:1px solid #1e2a22; border-radius:24px; padding:18px; margin-bottom:16px}
+.create{background:#111116; border:1px solid #1e1e24; border-radius:24px; padding:16px; margin-bottom:18px}
+.input{width:100%; background:#0a0a0f; border:1px solid #222; border-radius:14px; padding:12px 14px; color:#fff; font-size:14px; margin-bottom:8px; outline:none}
+.input:focus{border-color:#00e676}
+.btn{width:100%; background:#00e676; color:#000; border:none; border-radius:14px; padding:13px; font-weight:800; font-size:14px; cursor:pointer}
+.note{background:#111116; border:1px solid #1e1e24; border-left:3px solid var(--c); border-radius:20px; padding:14px; margin-bottom:12px}
+.bar{height:4px; background:#1a1a1a; border-radius:10px; overflow:hidden; margin:8px 0}
+.bar div{height:100%; border-radius:10px}
+.empty{text-align:center; padding:40px 20px; background:#111116; border:1px dashed #222; border-radius:24px; color:#666}
+.menu{font-size:22px; background:none; border:none; color:inherit; cursor:pointer}
+.dd{position:fixed; top:56px; right:12px; background:#111116; border:1px solid #222; border-radius:20px; width:280px; z-index:100; display:none; overflow:hidden}
+.dd button,.dd a{width:100%; padding:14px 16px; background:none; border:none; border-bottom:1px solid #1a1a1a; color:inherit; text-align:left; font-size:13px; cursor:pointer; display:flex; justify-content:space-between; text-decoration:none}
+.langs{display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:200; padding:20px}
+.langs.box{max-width:400px; margin:40px auto; background:#111116; border-radius:20px; overflow:hidden; border:1px solid #222}
+.langs.box button{width:100%; padding:14px; background:none; border:none; border-bottom:1px solid #1a1a1a; color:#fff; text-align:left; display:flex; justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="top"><div style="font-weight:800;">ROTTING 🌱</div><div style="display:flex; gap:8px;"><span id="count" style="font-size:11px; background:#111; padding:5px 10px; border-radius:20px; color:#888;">0 notes</span><button class="menu" onclick="toggle()">⋮</button></div></div>
+<div id="dd" class="dd"><button onclick="toggleTheme()">🎨 Theme <span>›</span></button><button onclick="showLangs()">🌍 Language <span>›</span></button><button onclick="shareApp()">📤 Share <span>›</span></button><a href="privacy.html">🔒 Privacy <span>›</span></a><button onclick="clearDead()" style="color:#ff5252;">🗑️ Clear Dead</button></div>
+<div id="langModal" class="langs" onclick="if(event.target==this) hideLangs()"><div class="box"><div style="padding:16px; font-weight:800; display:flex; justify-content:space-between;"><span>Language</span><span onclick="hideLangs()" style="cursor:pointer;">✕</span></div><div id="langList"></div></div></div>
+<div class="wrap"><div class="hero"><h2 id="heroTitle" style="font-size:11px; color:#00e676; margin-bottom:6px;">WHAT IS ROTTING NOTES?</h2><p id="heroDesc" style="font-size:13px; color:#8aa;">Notes are alive. They grow when you care for them and rot when you ignore them. Water your thoughts daily or watch them die and become compost.</p></div>
+<div class="create"><input id="title" class="input" placeholder="Title"><textarea id="text" class="input" placeholder="Write something..." style="height:80px; resize:none;"></textarea><button class="btn" onclick="addNote()" id="plantBtn">Plant 🌱 - 100% Health</button></div><div id="list"></div><div style="text-align:center; padding:40px 0 60px; color:#444; font-size:11px;">Rotting Notes v2.0 • Free • Offline • No tracking</div></div>
+<script>
+const LANGS={en:{d:"Notes are alive. They grow when you care for them and rot when you ignore them. Water your thoughts daily or watch them die and become compost.",p1:"Title - e.g My dream",p2:"Write something important...",b:"Plant 🌱 - 100% Health",h:"WHAT IS ROTTING NOTES?"},sw:{d:"Vidokezo ni hai. Vinakua unapovitunza na kuoza unapovipuuza.",p1:"Kichwa",p2:"Andika...",b:"Panda 🌱",h:"ROTTING NI NINI?"},fr:{d:"Les notes sont vivantes. Elles poussent quand vous en prenez soin.",p1:"Titre",p2:"Écrivez...",b:"Planter 🌱",h:"C'EST QUOI?"},es:{d:"Las notas están vivas. Crecen cuando las cuidas.",p1:"Título",p2:"Escribe...",b:"Plantar 🌱",h:"¿QUÉ ES?"},de:{d:"Notizen leben. Sie wachsen bei Pflege.",p1:"Titel",p2:"Schreiben...",b:"Pflanzen 🌱",h:"WAS IST?"},pt:{d:"Notas estão vivas. Crescem quando cuida.",p1:"Título",p2:"Escreva...",b:"Plantar 🌱",h:"O QUE É?"},ar:{d:"الملاحظات حية. تنمو بالعناية.",p1:"العنوان",p2:"اكتب...",b:"ازرع 🌱",h:"ما هو؟"},hi:{d:"नोट्स जीवित हैं। देखभाल से बढ़ते हैं।",p1:"शीर्षक",p2:"लिखें...",b:"बोएं 🌱",h:"क्या है?"},zh:{d:"笔记是有生命的。关心时生长。",p1:"标题",p2:"写一些...",b:"种植 🌱",h:"什么是？"},ja:{d:"ノートは生きています。",p1:"タイトル",p2:"書いて...",b:"植える 🌱",h:"とは？"},ru:{d:"Заметки живые. Растут от заботы.",p1:"Заголовок",p2:"Напишите...",b:"Посадить 🌱",h:"ЧТО ЭТО?"}};
+let lang=localStorage.getItem('rotting_lang')||'en'; let notes=JSON.parse(localStorage.getItem('rotting_v2')||'[]');
+function health(n){let days=Math.floor((Date.now()-new Date(n.last).getTime())/86400000); return Math.max(0,Math.min(100,n.health-days*12));}
+function rot(txt,h){if(h>60)return txt; if(h>25)return txt.split('').map(c=>Math.random()>0.18?c:'_').join(''); if(h>0)return txt.split('').map(c=>Math.random()>0.5?c:'·').join(''); return 'This note died and became compost.';}
+function save(){localStorage.setItem('rotting_v2',JSON.stringify(notes)); render();}
+function addNote(){let t=document.getElementById('title').value.trim(); let tx=document.getElementById('text').value.trim(); if(!t||!tx)return alert('Write title and note'); notes.push({id:Date.now().toString(36),title:t,text:tx,health:100,created:new Date().toISOString(),last:new Date().toISOString()}); document.getElementById('title').value=''; document.getElementById('text').value=''; save();}
+function water(id){let n=notes.find(x=>x.id==id); if(n){n.health=Math.min(100,n.health+25); n.last=new Date().toISOString(); save();}}
+function del(id){if(confirm('Delete?')){notes=notes.filter(x=>x.id!=id); save();}}
+function clearDead(){if(confirm('Delete all dead?')){notes=notes.filter(x=>health(x)>0); save();}}
+function applyLang(){let l=LANGS[lang]||LANGS.en; document.getElementById('heroDesc').innerText=l.d; document.getElementById('heroTitle').innerText=l.h; document.getElementById('title').placeholder=l.p1; document.getElementById('text').placeholder=l.p2; document.getElementById('plantBtn').innerText=l.b;}
+function render(){applyLang(); document.getElementById('count').innerText=notes.length+' notes'; let sorted=[...notes].sort((a,b)=>health(b)-health(a)); let html=''; for(let n of sorted){let h=health(n); let col=h>45?'#00e676':h>15?'#ffb300':'#ff5252'; let icon=h>75?'🌸':h>45?'🌱':h>15?'🥀':'💀'; html+=`<div class="note" style="--c:${col}"><div style="display:flex; justify-content:space-between; font-size:11px; color:#666;"><span>${icon} ${h.toFixed(0)}%</span><span onclick="del('${n.id}')" style="cursor:pointer;">✕</span></div><h3 style="margin:8px 0;">${n.title}</h3><div class="bar"><div style="width:${h}%; background:${col}"></div></div><p style="font-size:13px; color:#bbb;">${rot(n.text,h)}</p><button onclick="water('${n.id}')" style="margin-top:12px; width:100%; background:${col}; border:none; border-radius:12px; padding:9px; font-weight:800;">Water 💧 +25%</button></div>`;} if(!html) html=`<div class="empty"><div style="font-size:48px;">🌱</div><h3>Your garden is empty</h3><p>Plant your first note.</p></div>`; document.getElementById('list').innerHTML=html; let ll=''; for(let c in LANGS){ll+=`<button onclick="setLang('${c}')"><span>${c.toUpperCase()}</span><span>${lang==c?'✓':''}</span></button>`;} document.getElementById('langList').innerHTML=ll;}
+let open=false; function toggle(){open=!open; document.getElementById('dd').style.display=open?'block':'none';}
+function toggleTheme(){document.body.classList.toggle('light'); localStorage.setItem('rotting_theme',document.body.classList.contains('light')?'light':'dark');}
+function showLangs(){document.getElementById('langModal').style.display='block';}
+function hideLangs(){document.getElementById('langModal').style.display='none';}
+function setLang(c){lang=c; localStorage.setItem('rotting_lang',c); hideLangs(); render();}
+function shareApp(){if(navigator.share){navigator.share({title:'Rotting Notes',text:'Notes that are alive 🌱',url:location.href});} else {alert(location.href);}}
+document.addEventListener('click',function(e){let dd=document.getElementById('dd'); let m=document.querySelector('.menu'); if(open&&!dd.contains(e.target)&&!m.contains(e.target)){dd.style.display='none'; open=false;}});
+if(localStorage.getItem('rotting_theme')=='light') document.body.classList.add('light');
+render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
+</script>
+</body>
+</html>
